@@ -1,20 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
-  BarChart3,
-  TrendingUp,
   AlertTriangle,
-  CheckCircle2,
-  Brain,
   ShieldAlert,
-  ArrowRight,
-  Flame,
-  Award,
-  Zap
+  Flame
 } from 'lucide-react';
 import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
-import { Badge } from '../components/common/Badge';
 import { ProficiencyRadar } from '../components/charts/ProficiencyRadar';
 import { WeeklyActivityChart } from '../components/charts/WeeklyActivityChart';
 import { DifficultyDistributionChart } from '../components/charts/DifficultyDistributionChart';

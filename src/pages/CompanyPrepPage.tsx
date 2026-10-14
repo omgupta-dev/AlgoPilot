@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Building2,
-  CheckCircle2,
-  ArrowRight,
   ShieldAlert,
-  ChevronRight,
-  Layers,
   Terminal,
-  BookOpen,
   Sparkles
 } from 'lucide-react';
 import { mockCompanyTracks } from '../data/companyPrepData';

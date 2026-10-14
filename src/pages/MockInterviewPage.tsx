@@ -1,18 +1,10 @@
 import React, { useState } from 'react';
 import {
-  Timer,
-  Play,
-  CheckCircle2,
-  AlertCircle,
   ArrowRight,
-  ShieldAlert,
-  Bot,
-  Terminal,
-  RotateCcw,
   Sparkles
 } from 'lucide-react';
 import { mockProblems } from '../data/problemsData';
-import { Problem, DSATopic, Difficulty, SupportedLanguage, InterviewMessage } from '../types';
+import { DSATopic, Difficulty, SupportedLanguage, InterviewMessage } from '../types';
 import { defaultInterviewSession } from '../data/interviewData';
 import { InterviewTimer } from '../components/interview/InterviewTimer';
 import { InterviewerChat } from '../components/interview/InterviewerChat';
@@ -189,6 +181,45 @@ export const MockInterviewPage: React.FC = () => {
                   <div className="text-[11px] text-slate-500 mt-1">{t.desc}</div>
                 </button>
               ))}
+            </div>
+          </div>
+
+          {/* Topic & Language Selectors */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                Primary Algorithmic Topic
+              </label>
+              <select
+                value={selectedTopic}
+                onChange={e => setSelectedTopic(e.target.value as DSATopic | 'Mixed')}
+                className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+              >
+                <option value="Mixed">Mixed (Comprehensive Interview)</option>
+                <option value="Binary Search">Binary Search & Divide/Conquer</option>
+                <option value="Arrays">Arrays & Two Pointers</option>
+                <option value="Trees">Trees & Graph Traversals</option>
+                <option value="Dynamic Programming">Dynamic Programming & Memoization</option>
+              </select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                Programming Language
+              </label>
+              <select
+                value={language}
+                onChange={e => {
+                  const newLang = e.target.value as SupportedLanguage;
+                  setLanguage(newLang);
+                  setCode(activeProblem.starterCode[newLang]);
+                }}
+                className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-indigo-500 uppercase font-mono"
+              >
+                <option value="python">Python (Recommended for Speed)</option>
+                <option value="cpp">C++ (STL & Speed Optimization)</option>
+                <option value="java">Java (Enterprise standard)</option>
+              </select>
             </div>
           </div>
 

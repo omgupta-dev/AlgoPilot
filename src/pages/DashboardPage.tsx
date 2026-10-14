@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Code2,
   Flame,
   CheckCircle2,
   TrendingUp,
@@ -9,11 +8,6 @@ import {
   ArrowRight,
   Terminal,
   Timer,
-  Target,
-  Sparkles,
-  Bot,
-  ExternalLink,
-  BrainCircuit,
   BarChart2
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -201,7 +195,7 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {recommendations.map(({ problem, reason }, idx) => (
+          {recommendations.map(({ problem, reason }) => (
             <Card key={problem.id} className="p-5 space-y-3 flex flex-col justify-between" hoverable>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">

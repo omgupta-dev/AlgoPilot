@@ -1,15 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Target,
   Flame,
   CheckCircle2,
   Calendar,
-  Sparkles,
-  ArrowRight,
-  RotateCcw,
   Award,
-  Zap,
   Terminal
 } from 'lucide-react';
 import { storageService } from '../services/storageService';
@@ -17,7 +12,6 @@ import { streakCalendarMock } from '../data/missionsData';
 import { Mission } from '../types';
 import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
-import { Badge } from '../components/common/Badge';
 import { useAuth } from '../context/AuthContext';
 
 export const MissionsPage: React.FC = () => {

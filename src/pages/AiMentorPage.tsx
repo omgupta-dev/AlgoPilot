@@ -11,7 +11,6 @@ import {
   Sparkles,
   Copy,
   Check,
-  Terminal,
   ShieldAlert,
   ArrowRight
 } from 'lucide-react';

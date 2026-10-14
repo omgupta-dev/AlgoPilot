@@ -178,6 +178,30 @@ export const ProblemDetails: React.FC<ProblemDetailsProps> = ({
           </div>
         </div>
       )}
+
+      {/* Algorithmic Editorial / Approach Breakdown */}
+      {problem.editorialSummary && (
+        <div className="space-y-2 pt-2 border-t border-slate-800">
+          <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-400">
+            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+            <span>Optimal Approach Summary</span>
+          </div>
+          <div className="rounded-lg border border-slate-800 bg-slate-900/60 overflow-hidden">
+            <button
+              onClick={() => setShowEditorial(!showEditorial)}
+              className="w-full px-3 py-2 text-xs flex items-center justify-between text-left font-medium text-indigo-300 hover:text-indigo-200"
+            >
+              <span>{showEditorial ? 'Hide Approach Breakdown' : 'View Approach Breakdown'}</span>
+              {showEditorial ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+            </button>
+            {showEditorial && (
+              <div className="px-3 pb-3 pt-2 text-xs text-slate-300 border-t border-slate-800/60 bg-slate-950/40 leading-relaxed whitespace-pre-line">
+                {problem.editorialSummary}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { TopicSkill, DSATopic } from '../types';
+import { TopicSkill } from '../types';
 
 export const mockTopicSkills: TopicSkill[] = [
   {

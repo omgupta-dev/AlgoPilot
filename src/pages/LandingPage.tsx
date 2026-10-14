@@ -6,15 +6,11 @@ import {
   Code2,
   Brain,
   Target,
-  BarChart3,
   Bot,
   Timer,
-  CheckCircle2,
-  ChevronRight,
   ShieldCheck,
   Compass,
-  Zap,
-  BookOpen
+  Zap
 } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';

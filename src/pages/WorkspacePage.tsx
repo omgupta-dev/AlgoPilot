@@ -3,14 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import {
   ArrowLeft,
   Bot,
-  BarChart2,
-  Bookmark,
-  Sparkles,
-  CheckCircle2,
-  Lightbulb,
-  Cpu,
-  Layers,
-  ChevronRight
+  BarChart2
 } from 'lucide-react';
 import { mockProblems } from '../data/problemsData';
 import { Problem, SupportedLanguage, Submission } from '../types';

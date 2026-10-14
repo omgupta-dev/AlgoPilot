@@ -1,19 +1,17 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import {
   Search,
-  Filter,
   Bookmark,
   CheckCircle2,
-  Clock,
   ArrowUpDown,
   Terminal,
-  ExternalLink,
   X,
-  SlidersHorizontal
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { mockProblems } from '../data/problemsData';
-import { DSATopic, Difficulty, Problem } from '../types';
+import { DSATopic, Problem } from '../types';
 import { storageService } from '../services/storageService';
 import { Badge } from '../components/common/Badge';
 import { Button } from '../components/common/Button';
@@ -35,6 +33,8 @@ const ALL_TOPICS: DSATopic[] = [
   'Backtracking'
 ];
 
+const ITEMS_PER_PAGE = 8;
+
 export const ProblemsPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialSearch = searchParams.get('search') || '';
@@ -46,13 +46,23 @@ export const ProblemsPage: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>('All');
   const [sortBy, setSortBy] = useState<'title' | 'difficulty' | 'acceptanceRate'>('title');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   // Bookmarks and Solved status from storage
   const [bookmarks, setBookmarks] = useState<string[]>(() => storageService.getBookmarks());
-  const [solvedIds, setSolvedIds] = useState<string[]>(() => storageService.getSolvedProblemIds());
+  const solvedIds = useMemo(() => storageService.getSolvedProblemIds(), []);
 
   // Quick Problem Preview Modal
   const [previewProblem, setPreviewProblem] = useState<Problem | null>(null);
+
+  // Synchronize search params with URL
+  useEffect(() => {
+    const params: Record<string, string> = {};
+    if (searchQuery.trim()) params.search = searchQuery.trim();
+    if (selectedTopic !== 'All') params.topic = selectedTopic;
+    setSearchParams(params, { replace: true });
+    setCurrentPage(1);
+  }, [searchQuery, selectedTopic, setSearchParams]);
 
   const toggleBookmark = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
@@ -104,6 +114,13 @@ export const ProblemsPage: React.FC = () => {
     });
   }, [searchQuery, selectedTopic, selectedDifficulty, selectedStatus, sortBy, sortOrder, bookmarks, solvedIds]);
 
+  // Pagination calculation
+  const totalPages = Math.ceil(filteredProblems.length / ITEMS_PER_PAGE) || 1;
+  const paginatedProblems = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredProblems.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredProblems, currentPage]);
+
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
       {/* Header */}
@@ -126,16 +143,16 @@ export const ProblemsPage: React.FC = () => {
 
       {/* Filter and Search Bar */}
       <Card className="p-4 space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           {/* Search Input */}
-          <div className="relative md:col-span-2">
+          <div className="relative sm:col-span-2 lg:col-span-2">
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              placeholder="Search by title, tag, or topic (e.g. Binary Search, Two Pointers)..."
-              className="w-full pl-9 pr-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+              placeholder="Search by title, tag, or topic..."
+              className="w-full pl-9 pr-8 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
             />
             {searchQuery && (
               <button
@@ -151,7 +168,7 @@ export const ProblemsPage: React.FC = () => {
           <div>
             <select
               value={selectedDifficulty}
-              onChange={e => setSelectedDifficulty(e.target.value)}
+              onChange={e => { setSelectedDifficulty(e.target.value); setCurrentPage(1); }}
               className="w-full py-2 px-3 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-300 focus:outline-none focus:border-indigo-500"
             >
               <option value="All">All Difficulties</option>
@@ -165,7 +182,7 @@ export const ProblemsPage: React.FC = () => {
           <div>
             <select
               value={selectedStatus}
-              onChange={e => setSelectedStatus(e.target.value)}
+              onChange={e => { setSelectedStatus(e.target.value); setCurrentPage(1); }}
               className="w-full py-2 px-3 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-300 focus:outline-none focus:border-indigo-500"
             >
               <option value="All">All Statuses</option>
@@ -174,12 +191,32 @@ export const ProblemsPage: React.FC = () => {
               <option value="Bookmarked">Bookmarked</option>
             </select>
           </div>
+
+          {/* Sort Controls */}
+          <div className="flex items-center gap-1.5">
+            <select
+              value={sortBy}
+              onChange={e => setSortBy(e.target.value as 'title' | 'difficulty' | 'acceptanceRate')}
+              className="flex-1 py-2 px-2.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-300 focus:outline-none focus:border-indigo-500"
+            >
+              <option value="title">Sort: Title</option>
+              <option value="difficulty">Sort: Difficulty</option>
+              <option value="acceptanceRate">Sort: Acceptance</option>
+            </select>
+            <button
+              onClick={() => setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
+              title={`Sorting ${sortOrder === 'asc' ? 'Ascending' : 'Descending'}`}
+              className="p-2 bg-slate-950 border border-slate-800 hover:bg-slate-800 rounded-lg text-slate-300 transition-colors"
+            >
+              <ArrowUpDown className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
 
         {/* Topic Pills */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 pt-1 no-scrollbar text-xs">
           <button
-            onClick={() => setSelectedTopic('All')}
+            onClick={() => { setSelectedTopic('All'); setCurrentPage(1); }}
             className={`px-3 py-1 rounded-full whitespace-nowrap font-medium transition-colors ${
               selectedTopic === 'All'
                 ? 'bg-indigo-600 text-white'
@@ -191,7 +228,7 @@ export const ProblemsPage: React.FC = () => {
           {ALL_TOPICS.map(t => (
             <button
               key={t}
-              onClick={() => setSelectedTopic(t)}
+              onClick={() => { setSelectedTopic(t); setCurrentPage(1); }}
               className={`px-3 py-1 rounded-full whitespace-nowrap font-medium transition-colors ${
                 selectedTopic === t
                   ? 'bg-indigo-600 text-white'
@@ -220,8 +257,8 @@ export const ProblemsPage: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/60">
-              {filteredProblems.length > 0 ? (
-                filteredProblems.map(prob => {
+              {paginatedProblems.length > 0 ? (
+                paginatedProblems.map(prob => {
                   const isSolved = solvedIds.includes(prob.id);
                   const isBookmarked = bookmarks.includes(prob.id);
 
@@ -312,6 +349,45 @@ export const ProblemsPage: React.FC = () => {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination Controls */}
+        {filteredProblems.length > ITEMS_PER_PAGE && (
+          <div className="px-4 py-3 bg-slate-950/60 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+            <div>
+              Page <span className="text-white font-semibold">{currentPage}</span> of{' '}
+              <span className="text-white font-semibold">{totalPages}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
+                disabled={currentPage === 1}
+                className="p-1.5 rounded bg-slate-900 border border-slate-800 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed text-slate-300"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`w-6 h-6 rounded text-xs font-semibold ${
+                    currentPage === page
+                      ? 'bg-indigo-600 text-white'
+                      : 'bg-slate-900 text-slate-400 hover:bg-slate-800'
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+              <button
+                onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                className="p-1.5 rounded bg-slate-900 border border-slate-800 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed text-slate-300"
+              >
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        )}
       </Card>
 
       {/* Quick Problem Preview Modal */}
@@ -362,3 +438,4 @@ export const ProblemsPage: React.FC = () => {
     </div>
   );
 };
+

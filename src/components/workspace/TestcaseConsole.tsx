@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Play, Send, CheckCircle2, XCircle, Clock, Cpu, AlertTriangle, Sparkles } from 'lucide-react';
-import { Problem, TestCase, Submission } from '../../types';
+import { Play, Send, CheckCircle2, XCircle, Clock, Cpu } from 'lucide-react';
+import { Problem, Submission } from '../../types';
 import { RunResult } from '../../services/mockJudgeService';
 import { Button } from '../common/Button';
 

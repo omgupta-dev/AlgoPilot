@@ -1,18 +1,14 @@
 import React, { useState } from 'react';
 import {
   User,
-  Settings,
   Bell,
   Code,
-  ShieldCheck,
   RotateCcw,
   Check,
   ExternalLink,
-  Laptop,
   Moon,
   Sun,
   AlertTriangle,
-  Sparkles,
   FlaskConical
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -264,6 +260,34 @@ export const SettingsPage: React.FC = () => {
                 <Sun className="w-4 h-4 text-amber-400" />
                 <span className="font-semibold">Light Theme</span>
               </button>
+            </div>
+          </div>
+
+          {/* Notifications and Audio */}
+          <div className="space-y-3 pt-2 border-t border-slate-800/80">
+            <label className="text-slate-300 font-medium flex items-center gap-1.5">
+              <Bell className="w-3.5 h-3.5 text-indigo-400" />
+              <span>Notifications & Practice Reminders</span>
+            </label>
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-300">
+                <input
+                  type="checkbox"
+                  checked={emailReminders}
+                  onChange={e => setEmailReminders(e.target.checked)}
+                  className="rounded bg-slate-950 border-slate-800 text-indigo-600 focus:ring-0 focus:ring-offset-0"
+                />
+                <span>Daily practice reminder notifications</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-300">
+                <input
+                  type="checkbox"
+                  checked={soundEffects}
+                  onChange={e => setSoundEffects(e.target.checked)}
+                  className="rounded bg-slate-950 border-slate-800 text-indigo-600 focus:ring-0 focus:ring-offset-0"
+                />
+                <span>Sound effects on successful test suite pass</span>
+              </label>
             </div>
           </div>
 

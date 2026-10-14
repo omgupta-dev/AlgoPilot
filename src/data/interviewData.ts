@@ -1,4 +1,4 @@
-import { MockInterviewSession, InterviewMessage } from '../types';
+import { MockInterviewSession } from '../types';
 import { mockProblems } from './problemsData';
 
 export const defaultInterviewSession: MockInterviewSession = {
